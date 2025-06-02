@@ -4,18 +4,25 @@ from PIL import Image, ImageTk
 import logging
 import os
 
-# Stream Logger Setup
-logger = logging.getLogger("ImageSlideshow")
+# File handler and stream handler setup
+logger = logging.getLogger("Image_Slideshow_Logger")
 logger.setLevel(logging.DEBUG)
 
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.DEBUG)
+if logger.hasHandlers():
+    logger.handlers.clear()
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)  
 stream_handler.setFormatter(formatter)
 
-if not logger.hasHandlers():
-    logger.addHandler(stream_handler)
+file_handler = logging.FileHandler("image_slideshow.log")
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
 
 
 image_paths = [
@@ -23,7 +30,6 @@ image_paths = [
     r"C:\Users\HP\OneDrive\Pictures\Screenshots\Screenshot 2025-02-11 190318.png",
     r"C:\Users\HP\OneDrive\Pictures\Screenshots\Screenshot 2025-02-03 215952.png"
 ]
-
 
 def load_images(paths, size=(1080, 1080)):
     images = []
@@ -37,7 +43,6 @@ def load_images(paths, size=(1080, 1080)):
         except Exception as e:
             logger.error(f"Failed to load image '{path}': {e}")
     return images
-
 
 def main():
     try:
@@ -67,7 +72,6 @@ def main():
                 root.after(3000, update_image)
             except Exception as e:
                 logger.error(f"Error updating image : {e}")
-
 
         def start_slideshow():
             logger.info("Slideshow started.")
